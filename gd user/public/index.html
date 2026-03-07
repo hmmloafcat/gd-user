@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GD Player Finder</title>
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.png">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #1a1a1a; 
+            color: white; 
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .linked img {
+            width: 50px;
+            height: auto;
+        }
+
+        .linked {
+            padding: 0;
+            width: 50px;
+            height: 50px;
+            transition: transform 0.5s linear(0 0%, 0 2.27%, 0.02 4.53%, 0.04 6.8%, 0.06 9.07%, 0.1 11.33%, 0.14 13.6%, 0.25 18.15%, 0.39 22.7%, 0.56 27.25%, 0.77 31.8%, 1 36.35%, 0.89 40.9%, 0.85 43.18%, 0.81 45.45%, 0.79 47.72%, 0.77 50%, 0.75 52.27%, 0.75 54.55%, 0.75 56.82%, 0.77 59.1%, 0.79 61.38%, 0.81 63.65%, 0.85 65.93%, 0.89 68.2%, 1 72.7%, 0.97 74.98%, 0.95 77.25%, 0.94 79.53%, 0.94 81.8%, 0.94 84.08%, 0.95 86.35%, 0.97 88.63%, 1 90.9%, 0.99 93.18%, 0.98 95.45%, 0.99 97.73%, 1 100%);
+            background: transparent;
+        }
+
+        .linked:hover {
+            background: transparent;
+            /* Bounce out anim */
+            transform: scale(1.2);
+        }
+
+        .card { 
+            background: #2d2d2d;
+            border: 3px solid #444; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-width: 320px;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .icon {
+            width: 25px;
+            height: 25px;
+            object-fit: contain;
+        }
+
+        button { 
+            padding: 12px 24px; 
+            cursor: pointer; 
+            background: #4caf50; 
+            border: none; 
+            color: white; 
+            font-weight: bold;
+            border-radius: 5px; 
+            font-size: 1rem;
+            transition: transform 0.1s, background 0.2s;
+            margin-bottom: 20px;
+        }
+
+        button:hover { background: #66bb6a; }
+        button:active { transform: scale(0.95); }
+        button:disabled { background: #555; cursor: not-allowed; }
+
+        #name { color: #ffeb3b; text-shadow: 2px 2px #000; font-size: 2rem; margin: 10px 0; }
+        a { color: #00e6ff; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+
+        .hidden { display: none; opacity: 0; }
+
+        .small { font-size: 0.8rem; color: #707070; margin-top: 20px; line-height: 1.6; }
+        .small a { color: #707070; }
+
+        .toogray {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.7rem;
+            color: #2c2c2c;
+        }
+        
+        .id-text { font-size: 0.9rem; color: #aaa; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <h1>GD Player Finder</h1>
+    <button id="searchBtn" onclick="findPlayer()">Find Random Player</button>
+
+    <p id="errorOrFact" style="font-size: 0.9rem; color: #aaa;">Fun fact: There's roughly a 0.00025% chance for your user to appear</p>
+    
+    <div id="result" class="card">
+        <!-- YouTube -->
+        <button onclick="console.log('placeholder')" id="yt" class="linked hidden">
+            <img src="youtube.png" alt="YouTube" title="Linked YT Account" class="icon">
+        </button>
+
+        <!-- Twitch -->
+        <button onclick="console.log('placeholder')" id="twitch" class="linked hidden">
+            <img src="twitch.png" alt="Twitch" title="Linked Twitch account" class="icon">
+        </button>
+
+        <!-- Twitter/X -->
+        <button onclick="console.log('placeholder')" id="twitter" class="linked hidden">
+            <img src="twitter.png" alt="Twitter/X" title="Linked Twitter/X account" class="icon">
+        </button>
+
+        <!-- TikTok -->
+        <button onclick="console.log('placeholder')" id="tiktok" class="linked hidden">
+            <img src="tiktok.png" alt="TikTok" title="Linked TikTok account" class="icon">
+        </button>
+
+        <h2 id="name">-</h2>
+
+        <div class="id-text">
+            <span>Player ID: </span>
+            <span id="id">-</span>
+        </div>
+        
+        <div class="stat-row">
+            <img src="star.png" alt="Stars" class="icon">
+            <span id="stars">0</span>
+        </div>
+
+        <div class="stat-row">
+            <img src="diamond.png" alt="Gems" class="icon">
+            <span id="gems">0</span>
+        </div>
+
+        <!-- Gold coins -->
+        <div class="stat-row">
+            <img src="coin.png" alt="Gold Coins" class="icon">
+            <span id="goldCoins">0</span>
+        </div>
+
+        <!-- Silver coins -->
+        <div class="stat-row">
+            <img src="silvercoin.png" alt="Silver/User Coins" class="icon">
+            <span id="silverCoins">0</span>
+        </div>
+        
+        <!-- Moons -->
+        <div class="stat-row">
+            <img src="moon.png" alt="Moons" class="icon">
+            <span id="moons">0</span>
+        </div>
+        
+        <!-- Creator Points -->
+        <div class="stat-row">
+            <img src="crp.png" alt="Creator Points" class="icon">
+            <span id="creatorPoints">0</span>
+        </div>
+
+        <div class="stat-row">
+            <img src="demon.png" alt="Demons" class="icon">
+            <span id="demons">0</span>
+        </div>
+
+        <p style="margin-top: 20px;"><a id="link" href="#" target="_blank">View GDBrowser Profile</a></p>
+    </div>
+
+    <p style="margin-top: 30px;">
+        Credits to <a href="https://gdbrowser.com" target="_blank">GDBrowser</a> for the API. <br>
+        Credits to <a href="https://gdcolon.com">GD Colon</a> for the site.<br>
+        All assets from <a href="https://robtopgames.com" target="_blank">RobTop Games</a>.
+    </p>
+
+    <p class="small">Website made by <a href="https://hmmloafcat.github.io/loafs-world">loaf</a>
+        <br/>
+        Created with <a href="https://nodejs.org">Node.js</a>
+        <span class="toogray">if your eyes see this, buy the game for extra info</span>
+    </p>
+
+    <script>
+        // Helper to update the UI with player data
+        function updateUI(data) {
+            // Reveal the social media buttons if they exist, and set their links
+            const socialButtons = document.querySelectorAll('.linked');
+            socialButtons.forEach(btn => btn.classList.remove('hidden'));
+            
+            if (data && data.username) {
+                document.getElementById('result').classList.remove('hidden');
+                document.getElementById('id').innerText = data.playerID;
+                document.getElementById('name').innerText = data.username;
+                document.getElementById('stars').innerText = (data.stars || 0).toLocaleString();
+                document.getElementById('gems').innerText = (data.diamonds || 0).toLocaleString();
+                document.getElementById('moons').innerText = (data.moons || 0).toLocaleString();
+                document.getElementById('goldCoins').innerText = (data.coins || 0).toLocaleString();
+                document.getElementById('silverCoins').innerText = (data.userCoins || 0).toLocaleString();
+                document.getElementById('creatorPoints').innerText = (data.cp || 0).toLocaleString();
+                document.getElementById('demons').innerText = (data.demons || 0).toLocaleString();
+                document.getElementById('link').href = `https://gdbrowser.com/u/${data.username}`;
+
+                // Social Media Logic
+                const socials = [
+                    { id: 'yt', val: data.youtube, url: data.youtubeURL },
+                    { id: 'twitter', val: data.twitter, url: `https://twitter.com/${data.twitter}` },
+                    { id: 'twitch', val: data.twitch, url: `https://twitch.tv/${data.twitch}` },
+                    { id: 'tiktok', val: data.tiktok, url: `https://tiktok.com/@${data.tiktok}` }
+                ];
+
+                socials.forEach(social => {
+                    const el = document.getElementById(social.id);
+                    if (social.val) {
+                        el.classList.remove('hidden');
+                        // Update the link destination
+                        el.onclick = () => window.open(social.url, '_blank');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        async function findPlayer() {
+            const btn = document.getElementById('searchBtn');
+            btn.disabled = true;
+            btn.innerText = "Searching the Void...";
+            
+            try {
+                const response = await fetch('/api/random-player');
+                const data = await response.json();
+                if (data.username) {
+                    updateUI(data);
+                } else {
+                    document.getElementById("errorOrFact").innerText = "A player was NOT found or the servers are down. Try resetting or check gdbrowser.com!";
+                }
+            } catch (err) {
+                document.getElementById("errorOrFact").innerText = "Try resetting the page! If you are a nerd, check the developer console for info.";
+                console.error("Oh noes! For developers, heres the error:\n\n", err);
+                btn.disabled = true;
+                btn.innerText = "Error Occurred";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Find Random Player";
+            }
+        }
+
+        // To make loadID work, we use the GDBrowser API directly from the frontend
+        // This avoids needing to create a new route in index.js
+        async function loadInitialProfile(id) {
+            try {
+                const response = await fetch(`https://gdbrowser.com/api/profile/${id}`);
+                const data = await response.json();
+                updateUI(data);
+            } catch (err) {
+                document.getElementById("errorOrFact").innerText = "Try resetting the page! If you are a nerd, check the developer console for info.";
+                console.error("Oh noes! For developers, heres the error:\n\n", err);
+            }
+        }
+
+        loadInitialProfile(34080900);
+    </script>
+</body>
+</html>
